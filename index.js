@@ -16,6 +16,8 @@
         this.wrap = options.wrap
         //图片的列表  一般是ajax
         this.list = options.list
+        //手指滑动是否翻页的阈值 只支持 1/6这种模式
+        this.thresholdValue = options.thresholdValue || 1/6
 
         this.init()
         this.renderDom()
@@ -27,6 +29,9 @@
         this.fullscreenWidth = document.documentElement.clientWidth || document.body.clientWidth || window.innerWidth
         //初始的索引
         this.initIndex = 0
+
+        //计算滑动切换阈值
+        this.computedThresholdValue = this.fullscreenWidth * this.thresholdValue
     }
 
     //绑定dom
@@ -59,7 +64,7 @@
         //绑定三个触碰的常规事件
         outer.addEventListener('touchstart', startHandle)
         outer.addEventListener('touchmove', moveHandle)
-        outer.addEventListener('touchmove', endHandle)
+        outer.addEventListener('touchend', endHandle)
 
         //手指触碰的时候
         function startHandle (ev) {
@@ -88,7 +93,21 @@
         }
          //手指滑动的时候
         function endHandle (ev) {
-            
+            ev.preventDefault()
+
+            //手指离开时候的时间戳  -  触碰时候的时间戳 =   总共花的时间
+            let offsetTime = Date.now() - _this.startTime
+
+            /*
+                一般这种组件  会考虑到 快速滑动的状况 就是即使距离没达到  切换的阈值  但是手指滑动的速度很快  那么也会切换的、
+                一般这个时间差 我们默认用300 ms
+             */
+             //快速切换
+            if(offsetTime < 300) {
+
+            } else {
+                
+            }
         }
     }
     return Touchtab    
