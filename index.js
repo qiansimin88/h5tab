@@ -82,7 +82,7 @@
             }
             _this.target = touchTarget
         }
-         //手指滑动的时候
+         //手指滑动的时候   右滑为正数   左滑为负数
         function moveHandle (ev) {
             //禁止滚动事件
             ev.preventDefault()
@@ -94,20 +94,30 @@
          //手指滑动的时候
         function endHandle (ev) {
             ev.preventDefault()
-
+            console.log(_this.offsetX)
             //手指离开时候的时间戳  -  触碰时候的时间戳 =   总共花的时间
             let offsetTime = Date.now() - _this.startTime
 
             /*
                 一般这种组件  会考虑到 快速滑动的状况 就是即使距离没达到  切换的阈值  但是手指滑动的速度很快  那么也会切换的、
-                一般这个时间差 我们默认用300 ms
+                一般这个时间差 我们默认用300 ms 那么这时候的阈值会变成  50px 会比较合适
              */
              //快速切换
             if(offsetTime < 300) {
+                if(_this.offsetX > 50) {
 
+                }else if(_this.offsetX < -50) {
+
+                }else {
+
+                }
             } else {
-                
+
             }
+        }
+        //处理切换
+        function jumpIndex () {
+
         }
     }
     return Touchtab    
