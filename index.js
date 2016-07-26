@@ -32,6 +32,7 @@
 
         //计算滑动切换阈值
         this.computedThresholdValue = this.fullscreenWidth * this.thresholdValue
+        console.log('滚动的阈值：' +  this.computedThresholdValue)
     }
 
     //绑定dom
@@ -40,6 +41,7 @@
         this.outer = document.createElement('ul')
         //数据的长度
         this.dataLen = this.list.length
+        console.log(-this.dataLen)
 
         var screenW = this.fullscreenWidth
         for(var i = 0; i < this.dataLen; i++) {
@@ -60,6 +62,7 @@
     //触摸的事件
     Touchtab.prototype.touchEvent = function () {
         let outer = this.outer
+        let innerWidthDis = this.fullscreenWidth
         let _this = this 
         //绑定三个触碰的常规事件
         outer.addEventListener('touchstart', startHandle)
@@ -88,16 +91,15 @@
             ev.preventDefault()
             //滑动的时候计算偏移量 用于ul的平移
             _this.offsetX = ev.targetTouches[0].pageX - _this.startPageX
+            // console.log('滑动的距离：' + _this.offsetX)
             //改变outer的translate3d的x轴的值， translate3d可以启用gpu3d加速
-            _this.outer.style.webkitTransform = `translate3d(${_this.offsetX}px, 0, 0)`
+            _this.outer.style.webkitTransform = `translate3d(${_this.initIndex * innerWidthDis + _this.offsetX}px, 0, 0)`
         }
          //手指滑动的时候
         function endHandle (ev) {
             ev.preventDefault()
-            console.log(_this.offsetX)
             //手指离开时候的时间戳  -  触碰时候的时间戳 =   总共花的时间
             let offsetTime = Date.now() - _this.startTime
-
             /*
                 一般这种组件  会考虑到 快速滑动的状况 就是即使距离没达到  切换的阈值  但是手指滑动的速度很快  那么也会切换的、
                 一般这个时间差 我们默认用300 ms 那么这时候的阈值会变成  50px 会比较合适
@@ -105,19 +107,33 @@
              //快速切换
             if(offsetTime < 300) {
                 if(_this.offsetX > 50) {
-
+                    jumpIndex(1)  //整体往右
                 }else if(_this.offsetX < -50) {
-
+                    jumpIndex(-1)    //整体往左
                 }else {
-
+                    jumpIndex(0)
                 }
+            //正常切换
             } else {
-
+                if(_this.offsetX >= _this.computedThresholdValue) {
+                    jumpIndex(1)
+                }else if (_this.offsetX < -_this.computedThresholdValue) {
+                    jumpIndex(-1)
+                }else {
+                    jumpIndex(0)
+                }
             }
         }
         //处理切换
-        function jumpIndex () {
-
+        function jumpIndex (n) {
+            // if(_this.initIndex > _this.dataLen && _this.initIndex <= -_this.dataLen + 1) return 
+            if(n === -1) {
+                _this.initIndex --
+            }
+            if(n === 1) {
+                _this.initIndex ++
+            }
+             _this.outer.style.webkitTransform = `translate3d(${_this.initIndex * innerWidthDis}px, 0, 0)`
         }
     }
     return Touchtab    
