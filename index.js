@@ -126,11 +126,10 @@
         }
         //处理切换
         function jumpIndex (n) {
-            // if(_this.initIndex > _this.dataLen && _this.initIndex <= -_this.dataLen + 1) return 
-            if(n === -1) {
+            if(n === -1 && _this.initIndex > -_this.dataLen + 1) {
                 _this.initIndex --
             }
-            if(n === 1) {
+            if(n === 1 && _this.initIndex < 0) {
                 _this.initIndex ++
             }
              _this.outer.style.webkitTransform = `translate3d(${_this.initIndex * innerWidthDis}px, 0, 0)`
